@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2022-08-11 Thu 22:10 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Challenge</title>
+<meta name="author" content="Alberto Valdez" />
+<meta name="generator" content="Org Mode" />
+<link rel="stylesheet" type="text/css" href="https://albertov5.github.io/org-html-themes/src/readtheorg_theme/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="https://albertov5.github.io/org-html-themes/src/readtheorg_theme/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://albertov5.github.io/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="https://albertov5.github.io/org-html-themes/src/readtheorg_theme/js/readtheorg.js"></script>
+</head>
+<body>
+<div id="content" class="content">
+<h1 class="title">Challenge</h1>
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgf275f33">Traveling the World with APIs</a>
+<ul>
+<li><a href="#org4d47082">Objective</a></li>
+<li><a href="#org4801fcf">Results</a></li>
+<li><a href="#org2e0bd4c">Summary</a></li>
+<li><a href="#org127a22d">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-orgf275f33" class="outline-2">
+<h2 id="orgf275f33">Traveling the World with APIs</h2>
+<div class="outline-text-2" id="text-orgf275f33">
+</div>
+<div id="outline-container-org4d47082" class="outline-3">
+<h3 id="org4d47082">Objective</h3>
+<div class="outline-text-3" id="text-org4d47082">
+<p>
+In this project we had the task to find a good vacation itinerary without any idea or preferences for destinations. It was a sort of &ldquo;spin the globe and we go where it stops&rdquo;, except that we had the power of Python and APIs on our side.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org4801fcf" class="outline-3">
+<h3 id="org4801fcf">Results</h3>
+<div class="outline-text-3" id="text-org4801fcf">
+<p>
+Our final result is an itinerary around Portugal with all the Weather and coordinates data.
+</p>
+
+
+<div id="org8527138" class="figure">
+<p><img src="./Vacation_Itinerary/WheaterPy_travel_map.png" alt="WheaterPy_travel_map.png" width="600px" />
+</p>
+</div>
+
+<p>
+We manually chose out locations once we were able to have a better view of the whole map and the Hotels available.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org2e0bd4c" class="outline-3">
+<h3 id="org2e0bd4c">Summary</h3>
+<div class="outline-text-3" id="text-org2e0bd4c">
+<p>
+The steps were the following:
+</p>
+
+<ol class="org-ol">
+<li>Spin the globe, so to speak, and generate 2000 random locations using longitude and latitude.</li>
+<li>Localize the closest city to each of those coordinates and ask OpenWeather at <a href="https://openweathermap.org/api">https://openweathermap.org/api</a> for the current weather and overall description, then filter results to fit our desired temperature ranges.</li>
+<li>Use the Google API to find the nearest hotel to each city&rsquo;s coordinates according to our requirements, then visualize the possible locations in a map.</li>
+<li>Finally map out an itinerary and a route by finding four cities that are close to each other.</li>
+</ol>
+
+<p>
+This is an example of chosing the cities manually.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="color: #339CDB;">import</span> pandas <span style="color: #339CDB;">as</span> pd
+
+<span style="color: #d4d4d4;">vacation_df</span> = pd.read_csv(<span style="color: #c5937c;">"Vacation_Search/WeatherPy_vacation.csv"</span>)
+
+<span style="color: #d4d4d4;">vacation_start</span> = vacation_df.loc[vacation_df[<span style="color: #c5937c;">"City"</span>] == <span style="color: #c5937c;">"Santo Tirso"</span>]
+vacation_end = vacation_df.loc[vacation_df[<span style="color: #c5937c;">"City"</span>] == <span style="color: #c5937c;">"Santo Tirso"</span>]
+vacation_stop1 = vacation_df.loc[vacation_df[<span style="color: #c5937c;">"City"</span>] == <span style="color: #c5937c;">"Villaviciosa"</span>]
+vacation_stop2 = vacation_df.loc[vacation_df[<span style="color: #c5937c;">"City"</span>] == <span style="color: #c5937c;">"Muros"</span>]
+vacation_stop3 = vacation_df.loc[vacation_df[<span style="color: #c5937c;">"City"</span>] == <span style="color: #c5937c;">"Carballo"</span>]
+start = vacation_start.to_numpy()[<span style="color: #B5CEA8; font-weight: bold;">0</span>][<span style="color: #B5CEA8; font-weight: bold;">5</span>:<span style="color: #B5CEA8; font-weight: bold;">7</span>]
+end = vacation_end.to_numpy()[<span style="color: #B5CEA8; font-weight: bold;">0</span>][<span style="color: #B5CEA8; font-weight: bold;">5</span>:<span style="color: #B5CEA8; font-weight: bold;">7</span>]
+stop1 = vacation_stop1.to_numpy()[<span style="color: #B5CEA8; font-weight: bold;">0</span>][<span style="color: #B5CEA8; font-weight: bold;">5</span>:<span style="color: #B5CEA8; font-weight: bold;">7</span>]
+stop2 = vacation_stop2.to_numpy()[<span style="color: #B5CEA8; font-weight: bold;">0</span>][<span style="color: #B5CEA8; font-weight: bold;">5</span>:<span style="color: #B5CEA8; font-weight: bold;">7</span>]
+stop3 = vacation_stop3.to_numpy()[<span style="color: #B5CEA8; font-weight: bold;">0</span>][<span style="color: #B5CEA8; font-weight: bold;">5</span>:<span style="color: #B5CEA8; font-weight: bold;">7</span>]
+<span style="color: #C586C0;">print</span>(vacation_start[<span style="color: #c5937c;">"Hotel Name"</span>].<span style="color: #C586C0;">str</span>.replace(<span style="color: #c5937c;">"Santo Tirso"</span>, <span style="color: #c5937c;">""</span>))
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-org">9    Cidnay  - Charming Hotel &amp; Executive Center
+Name: Hotel Name, dtype: object
+</pre>
+</div>
+
+<p>
+Our vacation starts and ends in <code>Santo Tirso</code> at the <code>Cidnay Hotal &amp; Executive Center</code>. And we have a few stops in between.
+</p>
+
+<p>
+There were other options we were interested in but we ended up chosing Portugal as it had many cities that matched our requirements.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-org127a22d" class="outline-3">
+<h3 id="org127a22d">Conclusion</h3>
+<div class="outline-text-3" id="text-org127a22d">
+<p>
+It is really easy to request data from companies that provide an API for it, specially using Python libraries. Making thousands of requests takes a while so we must be careful in creating good and performant code so that all possible bottlenecks happen in the connection to the server and not in our program.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Alberto Valdez</p>
+<p class="date">Created: 2022-08-11 Thu 22:10</p>
+</div>
+</body>
+</html>

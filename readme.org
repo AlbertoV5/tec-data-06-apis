@@ -5,60 +5,66 @@
 #+OPTIONS: num:nil
 #+PROPERTY: header-args :mkdirp yes :dir . :exports both
 #+PROPERTY: header-args:shell :results drawer :wrap example :results silent
-#+PROPERTY: header-args:python :exports both :results output replace
+#+PROPERTY: header-args:python :exports both :results values org output replace
 
-* API
 
-https://openweathermap.org/current
+* Traveling the World with APIs
 
-* Objective
+** Objective
 
-At the most fundamental level, Jack needs help answering a question: How might we provide real-time suggestions for our client's ideal hotels? Your first task was to define what you meant by "ideal." So, over the course of the conversation, you narrowed that to hotels that were (1) within a given range of latitude and longitude and that (2) provided the right kind of weather for the client.
+In this project we had the task to find a good vacation itinerary without any idea or preferences for destinations. It was a sort of "spin the globe and we go where it stops", except that we had the power of Python and APIs on our side.
 
-* Plan
 
-Task: Collect and analyze weather data across cities worldwide.
-Purpose: PlanMyTrip will use the data to recommend ideal hotels based on clients' weather preferences.
-Method: Create a Pandas DataFrame with 500 or more of the world's unique cities and their weather data in real time. This process will entail collecting, analyzing, and visualizing the data.
+** Results
 
-* Stages
+Our final result is an itinerary around Portugal with all the Weather and coordinates data.
 
-Collect the Data
+#+attr_html: :width 600px
+[[./Vacation_Itinerary/WheaterPy_travel_map.png]]
 
-Use the NumPy module to generate more than 1,500 random latitudes and longitudes.
-Use the citipy module to list the nearest city to the latitudes and longitudes.
-Use the OpenWeatherMap API to request the current weather data from each unique city in your list.
-Parse the JSON data from the API request.
-Collect the following data from the JSON file and add it to a DataFrame:
-City, country, and date
-Latitude and longitude
-Maximum temperature
-Humidity
-Cloudiness
-Wind speed
-Exploratory Analysis with Visualization
+We manually chose out locations once we were able to have a better view of the whole map and the Hotels available.
 
-Create scatter plots of the weather data for the following comparisons:
-Latitude versus temperature
-Latitude versus humidity
-Latitude versus cloudiness
-Latitude versus wind speed
-Determine the correlations for the following weather data:
-Latitude and temperature
-Latitude and humidity
-Latitude and cloudiness
-Latitude and wind speed
-Create a series of heatmaps using the Google Maps and Places API that showcases the following:
-Latitude and temperature
-Latitude and humidity
-Latitude and cloudiness
-Latitude and wind speed
-Visualize Travel Data
+** Summary
 
-Create a heatmap with pop-up markers that can display information on specific cities based on a customer's travel preferences. Complete these steps:
+The steps were the following:
 
-Filter the Pandas DataFrame based on user inputs for a minimum and maximum temperature.
-Create a heatmap for the new DataFrame.
-Find a hotel from the cities' coordinates using Google's Maps and Places API, and Search Nearby feature.
-Store the name of the first hotel in the DataFrame.
-Add pop-up markers to the heatmap that display information about the city, current maximum temperature, and a hotel in the city.
+1. Spin the globe, so to speak, and generate 2000 random locations using longitude and latitude.
+2. Localize the closest city to each of those coordinates and ask OpenWeather at https://openweathermap.org/api for the current weather and overall description, then filter results to fit our desired temperature ranges.
+3. Use the Google API to find the nearest hotel to each city's coordinates according to our requirements, then visualize the possible locations in a map.
+4. Finally map out an itinerary and a route by finding four cities that are close to each other.
+
+This is an example of chosing the cities manually.
+
+#+begin_src python
+import pandas as pd
+
+vacation_df = pd.read_csv("Vacation_Search/WeatherPy_vacation.csv")
+
+vacation_start = vacation_df.loc[vacation_df["City"] == "Santo Tirso"]
+vacation_end = vacation_df.loc[vacation_df["City"] == "Santo Tirso"]
+vacation_stop1 = vacation_df.loc[vacation_df["City"] == "Villaviciosa"]
+vacation_stop2 = vacation_df.loc[vacation_df["City"] == "Muros"]
+vacation_stop3 = vacation_df.loc[vacation_df["City"] == "Carballo"]
+start = vacation_start.to_numpy()[0][5:7]
+end = vacation_end.to_numpy()[0][5:7]
+stop1 = vacation_stop1.to_numpy()[0][5:7]
+stop2 = vacation_stop2.to_numpy()[0][5:7]
+stop3 = vacation_stop3.to_numpy()[0][5:7]
+print(vacation_start["Hotel Name"].str.replace("Santo Tirso", ""))
+
+#+end_src
+
+#+RESULTS:
+#+begin_src org
+9    Cidnay  - Charming Hotel & Executive Center
+Name: Hotel Name, dtype: object
+#+end_src
+
+Our vacation starts and ends in =Santo Tirso= at the =Cidnay Hotal & Executive Center=. And we have a few stops in between.
+
+There were other options we were interested in but we ended up chosing Portugal as it had many cities that matched our requirements.
+
+
+** Conclusion
+
+It is really easy to request data from companies that provide an API for it, specially using Python libraries. Making thousands of requests takes a while so we must be careful in creating good and performant code so that all possible bottlenecks happen in the connection to the server and not in our program.
